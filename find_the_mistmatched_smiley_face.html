@@ -1,0 +1,99 @@
+<html>
+
+<head>
+	<title>Finding a Mismatched Smiling Face: the Completed Game</title>
+
+	<style>
+		img {
+			position: absolute;
+			/*fixes exact position of any img*/
+		}
+
+		div {
+			position: absolute;
+			width: 500px;
+			height: 500px;
+		}
+
+		#rightSide {
+			border-left: 1px solid #000000;
+			left: 500px;
+			/*only the rightSide div needs to be positioned*/
+		}
+	</style>
+
+</head>
+
+<body onload = 'generateFaces()';>
+
+	<h1> Matching Game </h1>
+
+	<h2> Click on the extra smiling face on the left. </h2>
+
+	<!--store faces on LEFT side-->
+	<div id = 'leftSide'></div>
+
+	<!--store faces on RIGHT side-->
+	<div id = 'rightSide'></div>
+
+<script>
+	var numberOfFaces = 5;
+	var theLeftSide = document.getElementById('leftSide');
+	var theRightSide = document.getElementById('rightSide');
+	var theBody = document.getElementsByTagName('body')[0];
+
+	function generateFaces() {
+
+		//all children under leftSide div & rightSide div are removed when player clicks correct face
+		while (theLeftSide.firstChild) {
+			theLeftSide.removeChild(theLeftSide.firstChild);
+        }
+		while (theRightSide.firstChild) {
+			theRightSide.removeChild(theRightSide.firstChild);
+		}
+
+		for (i = 0; i < numberOfFaces; i++) {
+			var img = document.createElement('img');
+			img.src = "http://home.cse.ust.hk/~rossiter/mooc/matching_game/smile.png";
+
+			//position faces
+			img.style.top = Math.random() * 400;
+			img.style.left = Math.random() * 400;
+			theLeftSide.appendChild(img);
+		}
+
+		//cloneNode returns a duplicate of the node on which this method was called
+		leftSideImages = theLeftSide.cloneNode(true);
+
+		//remove last child from left side
+		leftSideImages.removeChild(leftSideImages.lastChild);
+
+		//add leftSideImages to the right side
+		theRightSide.appendChild(leftSideImages);
+
+		//func that executes when user clicks on last child node in theLeftSide
+		theLeftSide.lastChild.onclick = function nextLevel(event) {
+			
+			//stopPropagation ensures that event doesnt get applied to other elements, eg other face images -> that would trigger func multiple times
+			event.stopPropagation();
+			numberOfFaces += 5;
+			generateFaces();
+		}
+	}
+
+	//func that executes when user clicks anywhere on the screen (the body)
+	theBody.onclick = function gameOver() {
+		alert('Game Over!');
+		
+		//nothing will happen now onwards when user clicks on the screen
+		theBody.onclick = null;
+
+		//nothing will happen now onwards when user clicks on the extra face
+		theLeftSide.lastChild.onclick = null;
+	}
+
+</script>
+
+</body>
+
+</html>
